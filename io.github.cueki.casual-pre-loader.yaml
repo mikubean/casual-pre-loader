@@ -1,0 +1,44 @@
+#This is based
+
+id: io.github.cueki.casual-pre-loader
+runtime: org.kde.Platform
+runtime-version: '6.10'
+sdk: org.kde.Sdk
+base: com.riverbankcomputing.PyQt.BaseApp
+base-version: '6.10'
+cleanup-commands:
+  - /app/cleanup-BaseApp.sh
+build-options:
+  env:
+    - BASEAPP_REMOVE_WEBENGINE=1
+# Disabling the web engine should be fine right?? From what I remember, the CasualPreLoader does-
+# not utilize it, though at the same time I cant think of a downside for keeping it off.
+finish-args:
+# From what I am am aware, network access is required? Though it is 2;35am as of the time of-
+# writting, so I could be completely misremembering.
+  - --share=ipc
+  - --socket=pulseaudio
+  - --socket=wayland
+  - --socket=fallback-x11
+
+ # The Following is quite literally copy pasyed from the Protontricks .yml file on the flatpak repo.
+ # It grants access to the Steam directly, though I think we can reduce how much access-
+ # the CasualPreLoader has.
+  - --filesystem=~/.var/app/com.valvesoftware.Steam
+  - --filesystem=~/.local/share/Steam
+  - --filesystem=~/.steam
+  - --filesystem=~/snap/steam
+  - --filesystem=~/.snap/data/steam  # For 'experimental.hidden-snap-folder'
+
+  # Also taken from Protontricks. I am keeping it to play it safe.
+  - --filesystem=xdg-desktop
+  - --filesystem=xdg-documents
+  - --filesystem=xdg-pictures
+  - --filesystem=xdg-music
+  - --filesystem=xdg-videos
+  - --filesystem=xdg-download
+modules:
+  - name: CasualPreLoader
+  - name: python3-requests.json
+  - name: python3-setupsm.json
+...
