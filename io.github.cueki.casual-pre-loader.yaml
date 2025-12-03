@@ -7,37 +7,11 @@ runtime-version: '6.10'
 command: casualpreloader
 sdk: org.kde.Sdk
 buildsystem: simple
-cleanup-commands:
-  #disabling this in order to see if its whats stopping the thing- /app/cleanup-BaseApp.sh it worked but remmebr to remove the commenting later gfndfjkgbnfdkjg
-
-  env:
-    # Commenting it out. - BASEAPP_REMOVE_WEBENGINE=1 - future me here it is required.
-# Disabling the web engine should be fine right?? From what I remember, the CasualPreLoader does-
-# not utilize it, though at the same time I cant think of a downside for keeping it off.
-#  Future me here, checking if we need the web engine since I am runnign into something.
-
- # The Following is quite literally copy pasyed from the Protontricks .yml file on the flatpak repo.
- # It grants access to the Steam directly, though I think we can reduce how much access-
- # the CasualPreLoader has.
-  - --filesystem=~/.var/app/com.valvesoftware.Steam
-  - --filesystem=~/.local/share/Steam
-  - --filesystem=~/.steam
-  - --filesystem=~/snap/steam
-  - --filesystem=~/.snap/data/steam  # For 'experimental.hidden-snap-folder'
-
-  # Also taken from Protontricks. I am keeping it to play it safe.
-  - --filesystem=xdg-desktop
-  - --filesystem=xdg-documents
-  - --filesystem=xdg-pictures
-  - --filesystem=xdg-music
-  - --filesystem=xdg-videos
-  - --filesystem=xdg-download
-  - --filesystem=xdg-data-home/icons
 
 modules:
 
-  #- python3-setupsm.json
-  - python3-requests.json
+#- python3-setupsm.json
+  - python3-requirements.json
 name: casualpreloader
 build-commands:
   - install -Dm755 run.sh
@@ -54,3 +28,20 @@ finish-args:
   - --socket=pulseaudio
   - --socket=wayland
   - --socket=fallback-x11
+# The Following is quite literally copy pasyed from the Protontricks .yml file on the flatpak repo.
+# It grants access to the Steam directly, though I think we can reduce how much access-
+# the CasualPreLoader has.
+  - --filesystem=~/.var/app/com.valvesoftware.Steam
+  - --filesystem=~/.local/share/Steam
+  - --filesystem=~/.steam
+  - --filesystem=~/snap/steam
+  - --filesystem=~/.snap/data/steam  # For 'experimental.hidden-snap-folder'
+
+# Also taken from Protontricks. I am keeping it to play it safe.
+  - --filesystem=xdg-desktop
+  - --filesystem=xdg-documents
+  - --filesystem=xdg-pictures
+  - --filesystem=xdg-music
+  - --filesystem=xdg-videos
+  - --filesystem=xdg-download
+  - --filesystem=xdg-data-home/icons
