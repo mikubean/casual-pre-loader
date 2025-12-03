@@ -1,4 +1,5 @@
-#This is based
+#This is based on the PyQt BaseApp example from their repo.
+# https://github.com/flathub/com.riverbankcomputing.PyQt.BaseApp
 
 id: io.github.cueki.casual-pre-loader
 runtime: org.kde.Platform
@@ -7,12 +8,13 @@ sdk: org.kde.Sdk
 base: com.riverbankcomputing.PyQt.BaseApp
 base-version: '6.10'
 cleanup-commands:
-  - /app/cleanup-BaseApp.sh
+  #disabling this in order to see if its whats stopping the thing- /app/cleanup-BaseApp.sh it worked but remmebr to remove the commenting later gfndfjkgbnfdkjg
 build-options:
   env:
-    - BASEAPP_REMOVE_WEBENGINE=1
+    # Commenting it out. - BASEAPP_REMOVE_WEBENGINE=1 - future me here it is required.
 # Disabling the web engine should be fine right?? From what I remember, the CasualPreLoader does-
 # not utilize it, though at the same time I cant think of a downside for keeping it off.
+#  Future me here, checking if we need the web engine since I am runnign into something.
 finish-args:
 # From what I am am aware, network access is required? Though it is 2;35am as of the time of-
 # writting, so I could be completely misremembering.
