@@ -4,24 +4,17 @@
 id: io.github.cueki.casual-pre-loader
 runtime: org.kde.Platform
 runtime-version: '6.10'
+command: casualpreloader
 sdk: org.kde.Sdk
-base: com.riverbankcomputing.PyQt.BaseApp
-base-version: '6.10'
+buildsystem: simple
 cleanup-commands:
   #disabling this in order to see if its whats stopping the thing- /app/cleanup-BaseApp.sh it worked but remmebr to remove the commenting later gfndfjkgbnfdkjg
-build-options:
+
   env:
     # Commenting it out. - BASEAPP_REMOVE_WEBENGINE=1 - future me here it is required.
 # Disabling the web engine should be fine right?? From what I remember, the CasualPreLoader does-
 # not utilize it, though at the same time I cant think of a downside for keeping it off.
 #  Future me here, checking if we need the web engine since I am runnign into something.
-finish-args:
-# From what I am am aware, network access is required? Though it is 2;35am as of the time of-
-# writting, so I could be completely misremembering.
-  - --share=ipc
-  - --socket=pulseaudio
-  - --socket=wayland
-  - --socket=fallback-x11
 
  # The Following is quite literally copy pasyed from the Protontricks .yml file on the flatpak repo.
  # It grants access to the Steam directly, though I think we can reduce how much access-
@@ -39,8 +32,25 @@ finish-args:
   - --filesystem=xdg-music
   - --filesystem=xdg-videos
   - --filesystem=xdg-download
+  - --filesystem=xdg-data-home/icons
+
 modules:
-  - name: CasualPreLoader
-  - name: python3-requests.json
-  - name: python3-setupsm.json
-...
+
+  #- python3-setupsm.json
+  - python3-requests.json
+name: casualpreloader
+build-commands:
+  - install -Dm755 run.sh
+sources:
+-type: git
+url: https://github.com/mikubean/casual-pre-loader
+tag: 1.7.2
+# sha256:
+
+finish-args:
+# From what I am am aware, network access is required? Though it is 2;35am as of the time of-
+# writting, so I could be completely misremembering.
+  - --share=ipc
+  - --socket=pulseaudio
+  - --socket=wayland
+  - --socket=fallback-x11
