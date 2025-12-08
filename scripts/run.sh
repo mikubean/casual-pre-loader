@@ -2,7 +2,8 @@
 
 set -e
 
-cd "$(dirname "$(dirname "${0}")")" # one dir up
+# shellcheck disable=SC2312
+cd "$(dirname "$(dirname "$(realpath -s "${0}")")")" # one dir up
 
 _log() (
 	set -e
@@ -21,7 +22,7 @@ _log_color() { _log "${1}" "\\033[${2}m[%s]\\033[0m\\t\033[${2}m%s\\033[0m\\n"; 
 
 debug() { _log_color DEBUG 32; }
 info() { _log_color INFO 34; }
-warn() { _log_color WARNING 33; }
+warning() { _log_color WARNING 33; }
 err() { _log_color ERROR 31; }
 
 dep_missing() { printf '%s is not installed, please install it using your package manager\n' "${1}"; }
@@ -88,8 +89,8 @@ git submodule update --init --recursive --remote
 # shellcheck disable=SC2310,SC2312
 # check for wine
 ! command -v wine >/dev/null 2>&1 &&
-	dep_missing wine | warn &&
-	printf '%s\n' 'Wine is required to run studiomdl.exe for model precaching' | warn &&
+	dep_missing wine | warning &&
+	printf '%s\n' 'Wine is required to run studiomdl.exe for model precaching' | warning &&
 	{ ${ERR} || [ "$(prompt_yn 'Continue anyway?' n)" != y ]; } && ERR=true
 
 ${ERR} && exit 1 # exit if errors were previously raised
@@ -102,12 +103,26 @@ if [ -f 'requirements.txt' ]; then
 
 	. .venv/bin/activate
 
-	# shellcheck disable=SC2310,SC2312
-	! check_python_version && deactivate && rm -r .venv && python3 -m venv .venv && . .venv/bin/activate
+	# shellcheck disable=SC2310
+	if ! check_python_version; then
+		printf '%s\n' 'virtual environment is using an out-of-date version of python, attempting to recreate' | warning
+
+		# shellcheck disable=SC2218
+		deactivate
+
+		rm -r .venv
+		python3 -m venv .venv
+		. .venv/bin/activate
+
+		! check_python_version &&
+			printf '%s\n' 'unable to recreate the virtual environment with an up-to-date version of python' | error &&
+			exit 1
+		printf '%s\n' 'managed to recreate the virtual environment with an up-to-date version of python' | warning
+	fi
 
 	printf '%s\n' 'Installing and/or updating dependencies' | info
-	pip -q install --upgrade pip
-	pip -q install --upgrade -r requirements.txt
+	python3 -m pip -q install --upgrade pip
+	python3 -m pip -q install --upgrade -r requirements.txt
 fi
 
 printf '%s\n' 'Starting Casual Preloader' | info
